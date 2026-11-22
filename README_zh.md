@@ -53,6 +53,17 @@
 
 ---
 
+## 🌐 FastFrames 免 VAE 极速像素头开源矩阵（同系列联动）
+
+欢迎体验同系列其他主流开源底座的 MIT 免 VAE 像素直出头：
+
+| 适配底座模型 | ComfyUI 插件仓（GitHub & 官方注册表） | Hugging Face 权重仓 | 核心规格与实测提速 |
+| :--- | :--- | :--- | :--- |
+| **Qwen-Image 2.1**（`1×` 与 `2×` 超分）*(当前仓库)* | **[Wither033/ComfyUI-QwenImage21-PixelHead](https://github.com/Wither033/ComfyUI-QwenImage21-PixelHead)** | **[pocis/Qwen-Image-2.1-PixelHead](https://huggingface.co/pocis/Qwen-Image-2.1-PixelHead)** | `48.8 MiB` (`1×`) / `52.1 MiB` (`1×`+`2×` 直出 `2048`) · **原生 4 通道 RGBA** · **提速 `67.1×`**（`5.55 ms`，均值 `33.91 dB`） |
+| **Krea-2**（`Turbo` 与 `Raw`） | **[Wither033/ComfyUI-Krea2-PixelHead](https://github.com/Wither033/ComfyUI-Krea2-PixelHead)** | **[pocis/Krea-2-PixelHead](https://huggingface.co/pocis/Krea-2-PixelHead)** | `52.6 MiB` BF16 · `6144d` 降维桥直出 RGB · **提速 `24.7×`**（高难艺术集均值 `33.33 dB`，肖像达 `37.1~41.6 dB`） |
+
+---
+
 ## 🚀 安装与权重下载
 
 ### 1. 安装 ComfyUI 插件

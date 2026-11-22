@@ -53,6 +53,17 @@ Measured against the official `qwen_image_2.1_vae_bf16.safetensors` (`Comfy-Org/
 
 ---
 
+## 🌐 FastFrames Zero-VAE Direct PixelHead Ecosystem
+
+Explore our open-source MIT Direct PixelHead family across major diffusion backbones:
+
+| Target Model | ComfyUI Custom Node (GitHub & Registry) | Hugging Face Weights | Key Specs & Speedup |
+| :--- | :--- | :--- | :--- |
+| **Qwen-Image 2.1** (`1×` & `2×` SR) *(This Repo)* | **[Wither033/ComfyUI-QwenImage21-PixelHead](https://github.com/Wither033/ComfyUI-QwenImage21-PixelHead)** | **[pocis/Qwen-Image-2.1-PixelHead](https://huggingface.co/pocis/Qwen-Image-2.1-PixelHead)** | `48.8 MiB` (`1×`) / `52.1 MiB` (`1×`+`2×` `2048px`) · Native **4-Ch RGBA** · **`67.1×` faster** (`5.55 ms`, `33.91 dB` PSNR) |
+| **Krea-2** (`Turbo` & `Raw`) | **[Wither033/ComfyUI-Krea2-PixelHead](https://github.com/Wither033/ComfyUI-Krea2-PixelHead)** | **[pocis/Krea-2-PixelHead](https://huggingface.co/pocis/Krea-2-PixelHead)** | `52.6 MiB` BF16 · `6144d` Bridged RGB · **`24.7×` faster** (`33.33 dB` PSNR, up to `41.6 dB` on portraits) |
+
+---
+
 ## 🚀 Installation & Model Weights
 
 ### 1. Install Custom Node
