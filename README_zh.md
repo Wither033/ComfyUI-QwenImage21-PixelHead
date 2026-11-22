@@ -66,8 +66,9 @@
 
 ### 2. 下载像素头权重
 前往 Hugging Face（**[pocis/Qwen-Image-2.1-PixelHead](https://huggingface.co/pocis/Qwen-Image-2.1-PixelHead)**）下载权重，放入 **`ComfyUI/models/pixel_heads/`**（或直接放入 `ComfyUI/models/vae/`）：
-- **`qwen_image_2.1_pixel_head_bf16.safetensors`**（`48.8 MiB` —— **强烈推荐**，BF16 主干 + FP32 归一化与输出层，与 FP32 版输出 `0.000000` 零误差）
-- **`qwen_image_2.1_pixel_head.safetensors`**（`97.0 MiB` —— 完整 FP32 科研母版权重）
+- **`qwen_image_2.1_pixel_head_x2_bf16.safetensors`**（`52.1 MiB` —— **新增全能二合一推荐！** 同时内置 `1×` 与 `2×` 超分双输出头，`1024` 潜空间 `~12 ms` 一步直出 `2048×2048` 4通道 RGBA，也可随时切回 `1x` 原生尺寸）
+- **`qwen_image_2.1_pixel_head_bf16.safetensors`**（`48.8 MiB` —— **纯 `1×` 极速推荐**，BF16 主干 + FP32 归一化与输出层，与 FP32 版输出 `0.000000` 零误差）
+- **`qwen_image_2.1_pixel_head.safetensors`**（`97.0 MiB`） / **`qwen_image_2.1_pixel_head_x2.safetensors`**（`103.3 MiB` —— 完整 FP32 科研母版权重）
 
 ---
 

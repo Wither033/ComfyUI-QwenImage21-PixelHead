@@ -66,8 +66,9 @@ Measured against the official `qwen_image_2.1_vae_bf16.safetensors` (`Comfy-Org/
 
 ### 2. Download Pixel Head Weights
 Download from Hugging Face (**[pocis/Qwen-Image-2.1-PixelHead](https://huggingface.co/pocis/Qwen-Image-2.1-PixelHead)**) and place into **`ComfyUI/models/pixel_heads/`** *(or `ComfyUI/models/vae/`)*:
-- **`qwen_image_2.1_pixel_head_bf16.safetensors`** (`48.8 MiB` — **Recommended**, BF16 trunk + FP32 norms & output layer, `0.000000` diff vs. FP32)
-- **`qwen_image_2.1_pixel_head.safetensors`** (`97.0 MiB` — Full FP32 master weights)
+- **`qwen_image_2.1_pixel_head_x2_bf16.safetensors`** (`52.1 MiB` — **NEW! All-in-One `1×` + `2×` Super-Res**, decodes `1024 → 2048` 4-Ch RGBA in `~12 ms`, or switch `output_scale` to `1x` for exact `5.55 ms` native readout!)
+- **`qwen_image_2.1_pixel_head_bf16.safetensors`** (`48.8 MiB` — **Recommended for `1×`-only**, BF16 trunk + FP32 norms & output layer, `0.000000` diff vs. FP32)
+- **`qwen_image_2.1_pixel_head.safetensors`** (`97.0 MiB`) / **`qwen_image_2.1_pixel_head_x2.safetensors`** (`103.3 MiB` — Full FP32 master weights)
 
 ---
 
