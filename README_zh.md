@@ -61,6 +61,7 @@
 | :--- | :--- | :--- | :--- |
 | **Qwen-Image 2.1**（`1×` 与 `2×` 超分）*(当前仓库)* | **[Wither033/ComfyUI-QwenImage21-PixelHead](https://github.com/Wither033/ComfyUI-QwenImage21-PixelHead)** | **[pocis/Qwen-Image-2.1-PixelHead](https://huggingface.co/pocis/Qwen-Image-2.1-PixelHead)** | `48.8 MiB` (`1×`) / `52.1 MiB` (`1×`+`2×` 直出 `2048`) · **原生 4 通道 RGBA** · **提速 `67.1×`**（`5.55 ms`，均值 `33.91 dB`） |
 | **Krea-2**（`Turbo` 与 `Raw`） | **[Wither033/ComfyUI-Krea2-PixelHead](https://github.com/Wither033/ComfyUI-Krea2-PixelHead)** | **[pocis/Krea-2-PixelHead](https://huggingface.co/pocis/Krea-2-PixelHead)** | `52.6 MiB` BF16 · `6144d` 降维桥直出 RGB · **提速 `24.7×`**（高难艺术集均值 `33.33 dB`，肖像达 `37.1~41.6 dB`） |
+| **通用训练框架与实战方法论** *(2D图像 & 3D视频)* | **[Wither033/FastFrames-PixelHead-Trainer](https://github.com/Wither033/FastFrames-PixelHead-Trainer)** | **[HF 官方统一合集](https://huggingface.co/collections/pocis/fastframes-zero-vae-direct-pixelheads-comfyui-6b031df8e9212f8bae294154)** | 完整公开 5 大底座源码解剖法、踩坑复盘、`pixelhead_trainer` 库与单卡 Colab L4 一键训练台 |
 
 ---
 
