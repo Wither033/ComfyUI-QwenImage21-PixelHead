@@ -18,13 +18,13 @@
       "mode": 0,
       "inputs": [],
       "outputs": [],
-      "title": "⚡ Qwen-Image 2.1 Direct 2x Pixel Head — 1024 Latent -> 2048x2048 RGBA in ~12ms (Zero VAE)",
+      "title": "Qwen-Image 2.1 Direct 2x Pixel Head — 1024 Latent -> 2048x2048 RGBA in ~12ms (Zero VAE)",
       "properties": {
         "Node name for S&R": "MarkdownNote",
         "cnr_id": "comfy-core"
       },
       "widgets_values": [
-        "### Qwen-Image 2.1 Direct 2x Super-Resolution Pixel Head (1024 -> 2048 Single-Pass Readout)\n- **One-Pass Decode + 2x Upscale (`~12 ms`)**: Samples at `1024x1024` in `KSampler`, then decodes directly to **`2048x2048` 4-Ch RGBA** via `qwen_image_2.1_pixel_head_x2_bf16.safetensors` without loading either the `644 MB` VAE or a separate ESRGAN upscaler!\n- **Dual-Scale (`1x` & `2x`) in One File**: Switch `output_scale` on node `10` between `2x` (`2048x2048`) and `1x` (`1024x1024`) anytime."
+        "### Qwen-Image 2.1 Direct 2x Super-Resolution Pixel Head (1024 -> 2048 Single-Pass Readout)\n- **One-Pass Decode + 2x Upscale (`~12 ms`)**: Samples at `1024x1024` in `KSampler`, then decodes directly to **`2048x2048` 4-Ch RGBA** via `qwen_image_2.1_pixel_head_x2_bf16.safetensors` without loading the `644 MB` VAE or an external upscaler.\n- **Dual-Scale (`1x` & `2x`) in One File**: Switch `output_scale` on node `10` between `2x` (`2048x2048`) and `1x` (`1024x1024`) anytime."
       ],
       "color": "#1e2d24",
       "bgcolor": "#14221a"

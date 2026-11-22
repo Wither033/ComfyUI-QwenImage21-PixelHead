@@ -18,13 +18,13 @@
       "mode": 0,
       "inputs": [],
       "outputs": [],
-      "title": "⚡ Qwen-Image 2.1 二阶 2x 超分像素头：1024 潜空间 ~12ms 一步直出 2048×2048 RGBA！",
+      "title": "Qwen-Image 2.1 二阶 2x 超分像素头：1024 潜空间 ~12ms 一步直出 2048×2048 RGBA",
       "properties": {
         "Node name for S&R": "MarkdownNote",
         "cnr_id": "comfy-core"
       },
       "widgets_values": [
-        "### Qwen-Image 2.1 Direct 2x Super-Resolution Pixel Head（免 VAE + 免超分模型一步直出 2K）\n- **解码 + 2× 超分一步到位（`~12 ms`）**：`KSampler` 按常规 `1024×1024` 采样结束后，由 `qwen_image_2.1_pixel_head_x2_bf16.safetensors` 直接从 `4096` 维特征一步输出 **`2048×2048` 高清 RGB + Alpha**，无需加载 `644 MB` 官方 VAE 与额外超分模型！\n- **单文件兼顾 `1x` 与 `2x`**：在节点 `10` 中将 `output_scale` 切换为 `1x` 即可输出原生 `1024×1024`，切换为 `2x`（或 `auto`）即直出 `2048×2048`。"
+        "### Qwen-Image 2.1 Direct 2x Super-Resolution Pixel Head（免 VAE + 免超分模型一步直出 2K）\n- **解码 + 2× 超分一步到位（`~12 ms`）**：`KSampler` 按常规 `1024×1024` 采样结束后，由 `qwen_image_2.1_pixel_head_x2_bf16.safetensors` 直接从 `4096` 维特征一步输出 **`2048×2048` 高清 RGB + Alpha**，无需加载 `644 MB` 官方 VAE 与额外超分模型。\n- **单文件兼顾 `1x` 与 `2x`**：在节点 `10` 中将 `output_scale` 切换为 `1x` 即可输出原生 `1024×1024`，切换为 `2x`（或 `auto`）即直出 `2048×2048`。"
       ],
       "color": "#1e2d24",
       "bgcolor": "#14221a"

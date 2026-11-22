@@ -18,13 +18,13 @@
       "mode": 0,
       "inputs": [],
       "outputs": [],
-      "title": "⚡ Qwen-Image 2.1 PixelHead：免 VAE 5.5ms 极速直出与官方 VAE 同屏对比",
+      "title": "Qwen-Image 2.1 PixelHead：免 VAE 5.5ms 直接解码与官方 VAE 同屏对比",
       "properties": {
         "Node name for S&R": "MarkdownNote",
         "cnr_id": "comfy-core"
       },
       "widgets_values": [
-        "### Qwen-Image 2.1 Direct Pixel Head（免 VAE 毫秒级 RGB + Alpha 直出）\n- **默认零 VAE 极速路径（`~5.5 ms`）**：`KSampler` 采样结束后直接由 `10. Pixel Head 极速免 VAE 解码` 将末步 `4096` 维特征还原为高清 RGB 与 Alpha 透明通道，全程无需加载 `644 MB` 官方 VAE！\n- **可选 1:1 同屏对比**：选中下方默认 Bypass 的紫色节点（`12`、`13`、`14`）按 **`Ctrl + B`** 开启，即可在同一随机种子下 1:1 对比官方原版 VAE。\n- **全模式通吃**：支持开/关 `8-Step LoRA`（开=8步 CFG 1.0；关=25步 CFG 3.5）、`QwenImage21Cache` 加速缓存、文生图及 `<image1>` 多参考图指令编辑。"
+        "### Qwen-Image 2.1 Direct Pixel Head（免 VAE 毫秒级 RGB + Alpha 直出）\n- **默认零 VAE 直出路径（`~5.5 ms`）**：`KSampler` 采样结束后直接由 `10. Pixel Head 免 VAE 解码` 将末步 `4096` 维特征还原为高清 RGB 与 Alpha 透明通道，全程无需加载 `644 MB` 官方 VAE。\n- **可选 1:1 同屏对比**：选中下方默认 Bypass 的紫色节点（`12`、`13`、`14`）按 **`Ctrl + B`** 开启，即可在同一随机种子下 1:1 对比官方原版 VAE。\n- **多模式兼容**：支持开/关 `8-Step LoRA`（开=8步 CFG 1.0；关=25步 CFG 3.5）、`QwenImage21Cache` 加速缓存、文生图及 `<image1>` 多参考图指令编辑。"
       ],
       "color": "#1e2d24",
       "bgcolor": "#14221a"
@@ -497,7 +497,7 @@
           "links": []
         }
       ],
-      "title": "10. Pixel Head 极速免 VAE 解码 (~5.5ms 直出 RGB+Alpha)",
+      "title": "10. Pixel Head 免 VAE 解码 (~5.5ms 直出 RGB+Alpha)",
       "properties": {
         "Node name for S&R": "QwenImage21PixelDecode"
       },
