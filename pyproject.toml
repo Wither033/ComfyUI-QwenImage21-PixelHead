@@ -1,0 +1,19 @@
+[project]
+name = "comfyui-qwenimage21-pixelhead"
+description = "Zero-VAE Direct RGBA Pixel Head for Qwen-Image 2.1 (~5.5ms decode, 67x faster than stock 644MB VAE, T2I & Omni Edit compatible) / Qwen-Image 2.1 免 VAE 极速像素直出节点"
+version = "1.0.0"
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "safetensors>=0.4.0",
+]
+
+[project.urls]
+Repository = "https://github.com/Wither033/ComfyUI-QwenImage21-PixelHead"
+Issues = "https://github.com/Wither033/ComfyUI-QwenImage21-PixelHead/issues"
+
+[tool.comfy]
+PublisherId = "wither033"
+DisplayName = "ComfyUI Qwen-Image 2.1 PixelHead (Zero-VAE)"
+Icon = ""
