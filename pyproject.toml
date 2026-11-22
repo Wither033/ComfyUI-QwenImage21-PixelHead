@@ -1,7 +1,7 @@
-[project]
+﻿[project]
 name = "comfyui-qwenimage21-pixelhead"
 description = "Zero-VAE Direct RGBA Pixel Head (1x & 2x Super-Res) for Qwen-Image 2.1 (~5.5ms decode, 67x faster than stock 644MB VAE, T2I & Omni Edit compatible) / Qwen-Image 2.1 免 VAE 极速像素直出节点"
-version = "1.1.0"
+version = "1.1.1"
 license = { file = "LICENSE" }
 readme = "README.md"
 requires-python = ">=3.10"
