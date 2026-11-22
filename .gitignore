@@ -6,3 +6,6 @@ Thumbs.db
 .env
 *.pt
 *.ckpt
+
+node.zip
+
