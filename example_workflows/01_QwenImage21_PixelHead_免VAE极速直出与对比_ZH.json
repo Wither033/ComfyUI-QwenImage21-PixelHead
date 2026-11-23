@@ -220,7 +220,7 @@
         "Node name for S&R": "QwenImage21PixelHeadLoader"
       },
       "widgets_values": [
-        "qwen_image_2.1_pixel_head_bf16.safetensors",
+        "qwen_image_2.1_pixel_head_v02_bf16.safetensors",
         "bf16_trunk_fp32_out"
       ],
       "color": "#1e2d24",

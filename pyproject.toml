@@ -1,7 +1,7 @@
 ﻿[project]
 name = "comfyui-qwenimage21-pixelhead"
-description = "Direct RGBA pixel readout head (1x & 2x) for Qwen-Image 2.1 in ComfyUI (~5.5 ms decode, 48.8 MiB BF16)"
-version = "1.1.2"
+description = "Direct RGBA pixel readout head (v0.2 High-Fidelity & v0.1 Fast 1x/2x) for Qwen-Image 2.1 in ComfyUI"
+version = "1.2.0"
 license = { file = "LICENSE" }
 readme = "README.md"
 requires-python = ">=3.10"
