@@ -18,13 +18,13 @@
       "mode": 0,
       "inputs": [],
       "outputs": [],
-      "title": "Qwen-Image 2.1 Direct Pixel Head — Zero-VAE 5.5ms Decode & 1:1 VAE Comparison",
+      "title": "Qwen-Image 2.1 Direct Pixel Head — Zero-VAE v0.3 Wavelet Decode (37.5ms) & 1:1 Comparison",
       "properties": {
         "Node name for S&R": "MarkdownNote",
         "cnr_id": "comfy-core"
       },
       "widgets_values": [
-        "### Qwen-Image 2.1 Direct Pixel Head (Zero-VAE RGB & RGBA Readout)\n- **Default Zero-VAE Fast Path (`~5.5 ms`)**: `KSampler` feeds directly into `10. Qwen-Image 2.1 Pixel Decode (Zero VAE)`, decoding `4096`-dim DiT features + `x0_hat` into RGB & Alpha without loading the `644 MB` VAE.\n- **Optional 1:1 Side-by-Side Comparison**: Select the bypassed purple nodes (`12`, `13`, `14`) at the bottom and press **`Ctrl + B`** to compare against the official Qwen-Image 2.1 VAE on the exact same seed.\n- **Universal Compatibility**: Works with 8-Step LoRA ON (`steps=8, cfg=1.0`) or OFF (`steps=25, cfg=3.5`), `QwenImage21Cache`, T2I, and `<image1>` Multi-Image Reference Editing."
+        "### Qwen-Image 2.1 Direct Pixel Head (Zero-VAE RGB & RGBA Readout · v0.3)\n- **Default Zero-VAE Path (`~37.5 ms` on v0.3 Wavelet / `~5.5–7.8 ms` on v0.1 Fast)**: `KSampler` feeds into `10. Qwen-Image 2.1 Pixel Decode (Zero VAE)`, decoding `4096`-dim DiT features + `64`-ch `x0_hat` into RGB & Alpha without loading the `644 MB` VAE.\n- **Optional 1:1 Side-by-Side Comparison**: Select the bypassed purple nodes (`12`, `13`, `14`) at the bottom and press **`Ctrl + B`** to compare against the official Qwen-Image 2.1 VAE on the same seed.\n- **Mode Compatibility**: Works with 8-Step LoRA ON (`steps=8, cfg=1.0`) or OFF (`steps=20–25, cfg=3.5–4.5`), `QwenImage21Cache`, T2I, and `<image1>` Multi-Image Reference Editing."
       ],
       "color": "#1e2d24",
       "bgcolor": "#14221a"
@@ -215,12 +215,12 @@
           ]
         }
       ],
-      "title": "5. Load Qwen-Image 2.1 Pixel Head (48.8 MB BF16)",
+      "title": "5. Load Qwen-Image 2.1 Pixel Head (v0.3 79.3 MB)",
       "properties": {
         "Node name for S&R": "QwenImage21PixelHeadLoader"
       },
       "widgets_values": [
-        "qwen_image_2.1_pixel_head_v02_bf16.safetensors",
+        "qwen_image_2.1_pixel_head_v03_bf16.safetensors",
         "bf16_trunk_fp32_out"
       ],
       "color": "#1e2d24",
@@ -497,7 +497,7 @@
           "links": []
         }
       ],
-      "title": "10. Qwen-Image 2.1 Pixel Decode (Zero VAE, ~5.5ms)",
+      "title": "10. Qwen-Image 2.1 Pixel Decode (Zero VAE)",
       "properties": {
         "Node name for S&R": "QwenImage21PixelDecode"
       },

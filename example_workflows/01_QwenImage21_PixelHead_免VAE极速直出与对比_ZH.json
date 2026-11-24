@@ -18,13 +18,13 @@
       "mode": 0,
       "inputs": [],
       "outputs": [],
-      "title": "Qwen-Image 2.1 PixelHead：免 VAE 5.5ms 直接解码与官方 VAE 同屏对比",
+      "title": "Qwen-Image 2.1 PixelHead：免 VAE 像素直出（v0.3 小波版 37.5ms）与原版 VAE 对比",
       "properties": {
         "Node name for S&R": "MarkdownNote",
         "cnr_id": "comfy-core"
       },
       "widgets_values": [
-        "### Qwen-Image 2.1 Direct Pixel Head（免 VAE 毫秒级 RGB + Alpha 直出）\n- **默认零 VAE 直出路径（`~5.5 ms`）**：`KSampler` 采样结束后直接由 `10. Pixel Head 免 VAE 解码` 将末步 `4096` 维特征还原为高清 RGB 与 Alpha 透明通道，全程无需加载 `644 MB` 官方 VAE。\n- **可选 1:1 同屏对比**：选中下方默认 Bypass 的紫色节点（`12`、`13`、`14`）按 **`Ctrl + B`** 开启，即可在同一随机种子下 1:1 对比官方原版 VAE。\n- **多模式兼容**：支持开/关 `8-Step LoRA`（开=8步 CFG 1.0；关=25步 CFG 3.5）、`QwenImage21Cache` 加速缓存、文生图及 `<image1>` 多参考图指令编辑。"
+        "### Qwen-Image 2.1 Direct Pixel Head（免 VAE RGB + Alpha 直出 · v0.3）\n- **默认免 VAE 直出路径（`v0.3` 约 `37.5 ms`，`v0.1` 约 `5.5–7.8 ms`）**：`KSampler` 采样结束后由 `10. Pixel Head 免 VAE 解码` 将末步 `4096` 维特征与 `64` 通道潜变量直接还原为 RGB 与 Alpha 透明通道，无需加载 `644 MB` 官方 VAE。\n- **可选 1:1 同屏对比**：选中下方默认 Bypass 的紫色节点（`12`、`13`、`14`）按 **`Ctrl + B`** 开启，即可在同一随机种子下 1:1 对比官方原版 VAE。\n- **多模式兼容**：支持开/关 `8-Step LoRA`（开=8步 CFG 1.0；关=20~25步 CFG 3.5~4.5）、`QwenImage21Cache` 加速缓存、文生图及 `<image1>` 多参考图指令编辑。"
       ],
       "color": "#1e2d24",
       "bgcolor": "#14221a"
@@ -215,12 +215,12 @@
           ]
         }
       ],
-      "title": "5. 加载 Qwen-Image 2.1 Pixel Head (48.8 MB)",
+      "title": "5. 加载 Qwen-Image 2.1 Pixel Head (v0.3 79.3 MB)",
       "properties": {
         "Node name for S&R": "QwenImage21PixelHeadLoader"
       },
       "widgets_values": [
-        "qwen_image_2.1_pixel_head_v02_bf16.safetensors",
+        "qwen_image_2.1_pixel_head_v03_bf16.safetensors",
         "bf16_trunk_fp32_out"
       ],
       "color": "#1e2d24",
@@ -497,7 +497,7 @@
           "links": []
         }
       ],
-      "title": "10. Pixel Head 免 VAE 解码 (~5.5ms 直出 RGB+Alpha)",
+      "title": "10. Pixel Head 免 VAE 解码 (直出 RGB+Alpha)",
       "properties": {
         "Node name for S&R": "QwenImage21PixelDecode"
       },

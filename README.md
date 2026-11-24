@@ -1,6 +1,6 @@
 # ComfyUI-QwenImage21-PixelHead
 
-Direct RGBA pixel readout head (`v0.2` High-Fidelity & `v0.1` Ultra-Fast `1x` / `2x`) for **Qwen-Image 2.1** in ComfyUI, replacing the `644.2 MiB` 64-channel WanVAE decoder at the end of sampling.
+Direct RGBA pixel readout head (`v0.3` Haar Wavelet High-Fidelity & `v0.1` Fast `1x` / `2x`) for **Qwen-Image 2.1** in ComfyUI, replacing the `644.2 MiB` 64-channel WanVAE decoder at the end of sampling.
 
 [English](README.md) | [简体中文](README_zh.md)
 
@@ -10,48 +10,60 @@ Direct RGBA pixel readout head (`v0.2` High-Fidelity & `v0.1` Ultra-Fast `1x` / 
 
 ---
 
-## What's New in `v0.2` (2026-11-24 — High-Fidelity Upgrade for Small Text & Portraits)
+## What's New in `v0.3` (2026-11-24 — 2D Haar Wavelet + Latent Spatial Highway + Detached-`LL` HF-GAN)
 
-Addressing community feedback ([Issue #1](https://github.com/Wither033/ComfyUI-QwenImage21-PixelHead/issues/1)) that `v0.1` was softer than the stock `644 MiB` VAE on tiny ticket text and close-up portrait skin pores/eyelashes:
+`v0.3` (`qwen_image_2.1_pixel_head_v03_bf16.safetensors`, `79.3 MiB`) upgrades `v0.2` across latency, activation VRAM, and sub-pixel detail:
 
-- **Full-resolution `16px → 8px → 4px → 2px → 1px` progressive refinement pyramid (`QwenImage21PixelHeadV2`, `78.5 MiB` BF16)**: Replaces `v0.1`'s `8×8` linear block bottleneck with native pixel-level `3×3` residual refinement and an `FP32` output stage.
-- **Explicit `SigmaAdaLN` step conditioning + real `1024×1024` `CFG=3.5` / `8-Step Turbo` trajectory distillation**: Eliminates feature compromise between Turbo and multi-step CFG sampling.
-- **Perceptual + frequency-domain training (`Charbonnier L1 + Edge Gradient + LPIPS-VGG + 2D FFT`)**: Cuts held-out `LPIPS-VGG` perceptual blur by **`42.4%`** (`0.1456 → 0.0838`) while raising `PSNR` by **`+0.82 dB`** (`+1.41 dB` on close-up portraits).
-- **Important**: Please update this custom node (`git pull` or ComfyUI Manager update to `v1.2.0+`) before loading `qwen_image_2.1_pixel_head_v02_bf16.safetensors`. Both `v0.1` and `v0.2` checkpoints are auto-detected by the same loader node.
+- **Exact 2D Haar Wavelet readout (`512×512` `(LL, LH, HL, HH)` + `0`-parameter analytical `iDWT`)**: Replaces `v0.2`'s full-resolution `1024×1024` `GroupNorm + depthwise` stage with norm-free `WaveletConvBlock2d` blocks on the half-resolution wavelet grid. At `1024×1024` on NVIDIA L4, decode latency drops **`3.07×` vs `v0.2`** (`115.05 ms → 37.51 ms`, **`17.9×` faster** than the `671.57 ms` official `644.2 MiB` VAE) while peak activation VRAM drops **`44.2%`** (`904 MiB → 504 MiB`).
+- **Multi-Scale `LatentSpatialHighway` (`3×3` conv bridge on `64`-ch `x0_hat_norm`)**: Carries neighbor-token stroke geometry directly from the denoised latent into the `8px`, `4px`, and `2px` wavelet grids, sharpening slanted barcode micro-text (`36.2 dB`) and dense `1px` copperplate cross-hatching (`+0.56 dB` domain gain over `v0.2`).
+- **Detached-`LL` High-Frequency Wavelet PatchGAN (`LL.detach()`)**: Applies Hinge adversarial supervision strictly to the high-frequency `(LH, HL, HH)` subbands while detaching low-frequency `LL` luminance/chrominance, avoiding GAN color drift and lifting overall held-out `PSNR` to **`33.81 dB`** (`+0.79 dB` over `v0.2`, `+1.19 dB` over `v0.1`) and `LPIPS-VGG` to **`0.0736`** (`-42.1%` vs `v0.1`, `-8.9%` vs `v0.2`).
+- **Node version requirement**: Update this custom node to **`v1.3.0+`** (`git pull` or ComfyUI Manager) before loading `v0.3` weights. A single loader node automatically detects `v0.3`, `v0.2`, and `v0.1` (`1x` / `2x`) checkpoints.
 
-![1:1 held-out comparison: Official 644MB VAE vs v0.1 vs v0.2](assets/v02_portrait_text_1to1.png)
+![1:1 held-out 4-way comparison: Official 644MB VAE vs v0.1 vs v0.2 vs v0.3 Wavelet](assets/v03_hero_1to1.png)
 
-*(Full 6-row `1:1` native-pixel comparison board: [`assets/v02_vs_v01_1to1_comparison.png`](assets/v02_vs_v01_1to1_comparison.png))*
+*(Full 6-row `1:1` native-pixel 4-way comparison board: [`assets/v03_4way_1to1_comparison.png`](assets/v03_4way_1to1_comparison.png))*
 
 ---
 
 ## Features
 
-- **Zero VAE VRAM spike**: Decodes without loading the `644.2 MiB` WanVAE (whose intermediate `VAEDecode` activations peak at `1.9–7.5 GB` at high resolutions), offloading weights back to CPU immediately after execution (`2K/4K` seamless cosine-blended tiling is also built in via `tile_mode`).
-- **Two checkpoint tiers for different workflows**:
-  - **`v0.2` High-Fidelity (`78.5 MiB` BF16 — Recommended)**: Crisp close-up portraits (`37.76 dB` PSNR), eyelashes, paper grain, and small text (`61.0 ms` on A100 / `~120 ms` on RTX 4060 Ti).
-  - **`v0.1` Ultra-Fast (`48.8 MiB` `1x` / `52.1 MiB` `1x+2x`)**: `3.4–5.5 ms` instant preview for rapid seed/composition exploration + single-pass `2x` (`1024 → 2048`) branch.
-- **Single checkpoint across sampling modes**:
-  - Supports both 8-step Turbo LoRA (`CFG = 1.0`) and 20–35 step Base sampling (`CFG > 1.0`).
+- **No `644.2 MiB` VAE required during sampling/decode**: Avoids `VAEDecode` intermediate VRAM spikes (`1.9–7.5 GB` at `1024–2048px`), offloads weights back to CPU after decoding, and includes cosine-blended `2K/4K` tiling (`tile_mode`).
+- **Checkpoint tiers**:
+  - **`v0.3` Wavelet High-Fidelity (`79.3 MiB` BF16 — Recommended default)**: `37.51 ms` on L4 (`~47.9 ms` on RTX 4060 Ti), `33.81 dB` overall PSNR (`39.17 dB` on close-up portraits), `0.0736` LPIPS-VGG.
+  - **`v0.1` Fast (`48.8 MiB` `1x` / `52.1 MiB` `1x+2x`)**: `5.5–7.8 ms` on L4 (`~3.4 ms` on A100) for rapid batch seed drafting, plus an optional single-pass `2x` (`1024 → 2048`) branch.
+  - **`v0.2` 1px Pyramid (`78.5 MiB` BF16)**: Retained on Hugging Face for reproducibility (`115.05 ms` on L4, `33.02 dB` PSNR).
+- **Sampling & conditioning compatibility**:
+  - Supports 8-step Turbo LoRA (`CFG = 1.0`) and 20–35 step Base sampling (`CFG = 3.5–4.5`) via `SigmaAdaLN`.
   - Supports Text-to-Image and `<image1>` multi-image reference editing (`norm_out` strips reference prefix tokens before `proj_out`).
   - Compatible with ComfyUI's `QwenImage21Cache` and outputs 4-channel RGBA (`image_rgb`, `alpha_mask`, `image_rgba`).
 
 ---
 
-## Benchmark (`1024×1024` Real Multi-Step Held-Out Split: 50% `8s Turbo`, 50% `20s CFG=3.5`)
+## Benchmark (`1024×1024` Held-Out Multi-Step Split on NVIDIA L4: `8s Turbo`, `20s CFG=3.5`, `24s CFG=4.5`)
 
-| Decoder | BF16 Size | `1024²` Latency (A100) | Speedup | Overall PSNR (↑) | Overall LPIPS-VGG (↓) | Portrait PSNR / LPIPS | Small Text PSNR / LPIPS |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Official Qwen-Image 2.1 VAE** | `644.2 MiB` | `201.33 ms` | `1.0×` | *(ref)* | `0.0000` | *(ref)* | *(ref)* |
-| **`PixelHead v0.2` (High-Fidelity)** | **`78.5 MiB`** | **`61.02 ms`** | **`3.3×`** | **`33.86 dB`** | **`0.0838` (`-42.4%`)** | **`37.76 dB` / `0.0808`** | **`32.70 dB` / `0.0778`** |
-| `PixelHead v0.1` (Ultra-Fast) | `48.8 MiB` | `3.39 ms` *(5.55 ms @ 768² L4)* | `59.4×` | `33.04 dB` | `0.1456` | `36.35 dB` / `0.1540` | `32.20 dB` / `0.1357` |
+Evaluated across 36 held-out `1024×1024` generations against `qwen_image_2.1_vae_bf16.safetensors` (`Comfy-Org/Qwen-Image-2.1`):
+
+| Decoder | BF16 Size | `1024²` Latency (L4) | Speedup | Peak Act. VRAM | Overall PSNR (↑) | Overall LPIPS-VGG (↓) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Official Qwen-Image 2.1 VAE** | `644.2 MiB` | `671.57 ms` | `1.0×` | `~1.9–3.2 GB` | *(ref)* | `0.0000` |
+| **`PixelHead v0.3` (Haar Wavelet + HF-GAN)** | **`79.3 MiB`** | **`37.51 ms`** | **`17.9×`** | **`504 MiB`** | **`33.81 dB`** | **`0.0736` (`-42.1%`)** |
+| `PixelHead v0.2` (1px Full-Res Pyramid) | `78.5 MiB` | `115.05 ms` | `5.8×` | `904 MiB` | `33.02 dB` | `0.0808` |
+| `PixelHead v0.1` (8×8 Linear) | `48.8 MiB` | `7.77 ms` | `86.4×` | `< 200 MiB` | `32.62 dB` | `0.1272` |
+
+### Per-Domain Breakdown (`PSNR ↑ / LPIPS-VGG ↓`)
+
+| Domain (`1024×1024` Held-Out) | `v0.1` (8×8 Linear) | `v0.2` (1px Pyramid) | **`v0.3` (Haar Wavelet + Highway)** | `v0.3` Gain vs `v0.2` |
+| :--- | :---: | :---: | :---: | :--- |
+| **`portrait` (Close-up skin pores & hair)** | `37.29 dB` / `0.1211` | `38.25 dB` / `0.0630` | **`39.17 dB` / `0.0572`** | **`+0.92 dB` PSNR, `-9.2%` LPIPS** |
+| **`small_text` (Slanted tickets & signage)** | `32.50 dB` / `0.1235` | `32.80 dB` / `0.0792` | **`33.61 dB` / `0.0727`** | **`+0.81 dB` PSNR, `-8.2%` LPIPS** |
+| **`fine_art` (Copperplate cross-hatching)** | `26.82 dB` / `0.1490` | `26.85 dB` / `0.1107` | **`27.41 dB` / `0.0987`** | **`+0.56 dB` PSNR, `-10.8%` LPIPS** |
 
 ---
 
 ## Installation
 
-### 1. Install or Update Custom Node (`v1.2.0+` required for `v0.2` weights)
-Install/update via ComfyUI Manager (`ComfyUI-QwenImage21-PixelHead`), `comfy node install comfyui-qwenimage21-pixelhead`, or `git`:
+### 1. Install or Update Custom Node (`v1.3.0+` required for `v0.3` weights)
+Install or update via ComfyUI Manager (`ComfyUI-QwenImage21-PixelHead`), `comfy node install comfyui-qwenimage21-pixelhead`, or `git`:
 
 ```bash
 cd ComfyUI/custom_nodes/ComfyUI-QwenImage21-PixelHead
@@ -63,16 +75,16 @@ git pull
 ### 2. Download Weights
 Download from [pocis/Qwen-Image-2.1-PixelHead](https://huggingface.co/pocis/Qwen-Image-2.1-PixelHead) into `ComfyUI/models/pixel_heads/` (or `ComfyUI/models/vae/`):
 
-- **`qwen_image_2.1_pixel_head_v02_bf16.safetensors` (`78.5 MiB` — Recommended)**: `v0.2` High-Fidelity `1x` head (sharp portraits, skin micro-texture, and small text).
-- `qwen_image_2.1_pixel_head_bf16.safetensors` (`48.8 MiB`): `v0.1` Ultra-Fast `1x` head (`3.4–5.5 ms` rapid batch drafting).
+- **`qwen_image_2.1_pixel_head_v03_bf16.safetensors` (`79.3 MiB` — Recommended)**: `v0.3` Haar Wavelet + Latent Spatial Highway `1x` head (`37.51 ms` on L4, sharpest portraits, small print, and cross-hatching).
+- `qwen_image_2.1_pixel_head_bf16.safetensors` (`48.8 MiB`): `v0.1` Fast `1x` head (`7.77 ms` on L4, rapid seed drafting).
 - `qwen_image_2.1_pixel_head_x2_bf16.safetensors` (`52.1 MiB`): `v0.1` combined `1x` + `2x` (`1024 → 2048` quick upscale via `output_scale`).
-- Full `FP32` variants (`qwen_image_2.1_pixel_head_v02.safetensors`, etc.) are also available in the Hugging Face repo.
+- `qwen_image_2.1_pixel_head_v02_bf16.safetensors` (`78.5 MiB`): Previous `v0.2` 1px pyramid checkpoint, plus full `FP32` variants (`_v03.safetensors`, `_v02.safetensors`, etc.).
 
 ---
 
 ## Usage
 
-Example workflows are in [`example_workflows/`](example_workflows/):
+Example workflows (defaulting to `v0.3`) are in [`example_workflows/`](example_workflows/):
 - [`01_QwenImage21_PixelHead_ZeroVAE_EN.json`](example_workflows/01_QwenImage21_PixelHead_ZeroVAE_EN.json)
 - [`01_QwenImage21_PixelHead_免VAE极速直出与对比_ZH.json`](example_workflows/01_QwenImage21_PixelHead_免VAE极速直出与对比_ZH.json)
 
@@ -93,14 +105,14 @@ Example workflows are in [`example_workflows/`](example_workflows/):
 
 | Model | ComfyUI Node | Weights | Notes |
 | :--- | :--- | :--- | :--- |
-| **Qwen-Image 2.1** *(this repo)* | [Wither033/ComfyUI-QwenImage21-PixelHead](https://github.com/Wither033/ComfyUI-QwenImage21-PixelHead) | [pocis/Qwen-Image-2.1-PixelHead](https://huggingface.co/pocis/Qwen-Image-2.1-PixelHead) | **`v0.2` (`78.5 MiB`, `LPIPS 0.0838`)** + `v0.1` (`48.8 MiB`, `3.4–5.5 ms`), 4-ch RGBA |
+| **Qwen-Image 2.1** *(this repo)* | [Wither033/ComfyUI-QwenImage21-PixelHead](https://github.com/Wither033/ComfyUI-QwenImage21-PixelHead) | [pocis/Qwen-Image-2.1-PixelHead](https://huggingface.co/pocis/Qwen-Image-2.1-PixelHead) | **`v0.3` Wavelet (`79.3 MiB`, `37.5 ms`, `LPIPS 0.0736`)** + `v0.1` (`48.8 MiB`, `7.8 ms`), 4-ch RGBA |
 | **Krea-2** | [Wither033/ComfyUI-Krea2-PixelHead](https://github.com/Wither033/ComfyUI-Krea2-PixelHead) | [pocis/Krea-2-PixelHead](https://huggingface.co/pocis/Krea-2-PixelHead) | `52.6 MiB` BF16, `6144d` bridged RGB, `59.55 ms` (`24.7×`), `33.33 dB` |
 | **MiniMax-H3** *(preview)* | [Wither033/ComfyUI-MiniMaxH3-PixelHead](https://github.com/Wither033/ComfyUI-MiniMaxH3-PixelHead) | [pocis/MiniMax-H3-Video-PixelHead](https://huggingface.co/pocis/MiniMax-H3-Video-PixelHead) | Experimental preview (high-frequency video textures are currently soft) |
-| **Training Code & Notes** | [Wither033/FastFrames-PixelHead-Trainer](https://github.com/Wither033/FastFrames-PixelHead-Trainer) | [HF Collection](https://huggingface.co/collections/pocis/fastframes-zero-vae-direct-pixelheads-comfyui-6b031df8e9212f8bae294154) | Training toolkit, DiT hook notes, and training notebooks |
+| **Training Code & Notes** | [Wither033/FastFrames-PixelHead-Trainer](https://github.com/Wither033/FastFrames-PixelHead-Trainer) | [HF Collection](https://huggingface.co/collections/pocis/fastframes-zero-vae-direct-pixelheads-comfyui-6b031df8e9212f8bae294154) | Training toolkit, DiT hook notes, and training notebooks (`01`–`07`) |
 
 ## Limitations
 
-- **Ultra-tiny `2px` slanted pseudo-text & dense copperplate cross-hatching**: `v0.2` closes ~85–90% of the gap on portraits and standard small print, while ultra-compressed `2px` slanted micro-script and `1px` dense engravings remain slightly softer than the `644 MiB` stock VAE (a faster wavelet-based `v0.3` is in progress).
+- **Extreme `1px` dense woodcut micro-engravings**: `v0.3` matches the `644 MiB` stock VAE closely on portraits (`39.17 dB`), ticket print (`33.61 dB`), and copperplate hatching, while ultra-dense `1px` woodcut engravings (`17.9 dB`, `LPIPS 0.105`) remain slightly softer than the `644 MiB` causal conv decoder.
 - **Offline `.latent` files**: Decoding requires the final-step `4096`-dim DiT features captured by the Tap node during sampling.
 
 ## License & Credits
